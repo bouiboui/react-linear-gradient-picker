@@ -157,6 +157,10 @@ const GradientPicker = ({
 	const paletteWidth = width - HALF_STOP_WIDTH;
 	const stopsHolderDisabled = palette.length >= maxStops;
 
+	if (activeColorId === null) {
+		updateActiveColor(palette[0].id);
+	}
+
 	return (
 		<div className="gp">
 			<Palette width={paletteWidth} height={paletteHeight} palette={palette}/>

@@ -6,7 +6,7 @@ import './index.scss';
 
 const ColorStop = ({ stop, limits, onPosChange, onDeleteColor, onDragStart = noop, onDragEnd = noop}) => {
 	const colorStopRef = useRef();
-	const [allowRemoveOnDoubleClick, setAllowRemoveOnDoubleClick] = useState(false)
+	const [allowRemoveOnDoubleClick, setAllowRemoveOnDoubleClick] = useState(false);
 	const [drag] = useStopDragging({
 		stop,
 		limits,
@@ -29,7 +29,7 @@ const ColorStop = ({ stop, limits, onPosChange, onDeleteColor, onDragStart = noo
 			style={{ left: offset }}
 			onMouseDown={drag}
 			onDoubleClick={() => {
-				allowRemoveOnDoubleClick && onDeleteColor(stop.id)
+				allowRemoveOnDoubleClick && onDeleteColor(stop.id);
 			}}
 			onTouchStart={drag}>
 			<div style={{ backgroundColor: color, opacity }}/>
