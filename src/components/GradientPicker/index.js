@@ -48,9 +48,20 @@ const GradientPicker = ({
 }) => {
 	palette = mapIdToPalette(palette);
 
-	const [defaultActiveColor] = palette;
-	const [activeColorId, setActiveColorId] = useState(defaultActiveColor.id);
+	const [activeColorId, setActiveColorId] = useState(null);
 
+	const updateActiveColor = (id) => {
+		if (id === activeColorId) {
+			return;
+		}
+		setActiveColorId(id);
+		onColorStopSelect(id);
+		const updatedPalette = palette.map(color => ({
+			...color,
+			active: color.id === id
+		}));
+		onPaletteChange(updatedPalette);
+	};
 	const limits = useMemo(() => {
 		const min = -HALF_STOP_WIDTH;
 		const max = width - HALF_STOP_WIDTH;
@@ -62,11 +73,20 @@ const GradientPicker = ({
 		if (palette.length >= maxStops) return;
 
 		const { color } = getPaletteColor(palette, activeColorId);
-		const entry = { id: nextColorId(palette), offset: offset / width, color };
 
-		const updatedPalette = [...palette, entry];
+		const entry = {
+			id: nextColorId(palette),
+			offset: offset / width,
+			color,
+			active: true
+		};
 
-		setActiveColorId(entry.id);
+		const updatedPalette = [
+			...palette.map(color => ({ ...color, active: false })),
+			entry
+		];
+
+		updateActiveColor(entry.id);
 		handlePaletteChange(updatedPalette);
 	};
 
@@ -76,17 +96,14 @@ const GradientPicker = ({
 		const updatedPalette = palette.filter(c => c.id !== id);
 		const activeId = updatedPalette.reduce((a, x) => x.offset < a.offset ? x : a, updatedPalette[0]).id;
 
-		setActiveColorId(activeId);
+		updateActiveColor(activeId);
 		handlePaletteChange(updatedPalette);
 	};
 
 	const onStopDragStart = (id) => {
-		if (id !== activeColorId) {
-			setActiveColorId(id);
-
 			const color = palette.find((color) => color.id === id);
 			onColorStopSelect(color);
-		}
+			updateActiveColor(id);
 	};
 
 	const handleColorSelect = (color, opacity = 1) => {
@@ -103,7 +120,6 @@ const GradientPicker = ({
 				...rest,
 				id,
 				offset: Number(offset).toFixed(3),
-				active: id === activeColorId
 			}));
 
 		onPaletteChange(sortedPalette);
