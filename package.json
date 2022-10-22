@@ -8,7 +8,7 @@
     "lint": "eslint .",
     "build": "webpack --config ./webpack.config.js",
     "deploy-storybook": "storybook-to-ghpages",
-    "prepublishOnly": "npm run build && npm run deploy-storybook"
+    "prepare": "npm run build"
   },
   "repository": {
     "type": "git",
